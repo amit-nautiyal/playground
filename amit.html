@@ -1,119 +1,31 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta charset="utf-8">
-      <title>Amit Nautiyal - My github projects</title>
-      <link rel="stylesheet" href="styles.css" media="screen" title="no title" charset="utf-8">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-      <style>
-         .footer {
-            margin-bottom: 0;
-         }
-      </style>
-   </head>
-   <body>
-      <div class="jumbotron">
-         <div class="container">
-            <h1>Amit Nautiyal - My github projects</h1>
-            <p class="credit">
-               Following are the links for github hosted projects. This is my playground area and I often visit here when I like to learn or play around with some new stuff.
-            </p>
-            <div>
-               <a href=https://github.com/amit-nautiyal?tab=repositories" target="_blank">Click here</a> to check my repos.
-            </div>                                                                           
-         </div>
-      </div>
-      <div class="container">
-         <div class="row">
-            <div class="col-md-12">
-               <div class="panel panel-default">
-                 <div class="panel-heading">
-                   <h3 class="panel-title">React Playground</h3>
-                 </div>
-                 <div class="panel-body">
-                   <h3>Links</h3>
-                   <ul>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/shopping-cart/" target="_blank">React + Localstorage based Shopping cart</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/beer-selection" target="_blank">React Filter Beer Selection </a>
-                       </li>
-                      <li>
-                        <a href="http://amit-nautiyal.github.io/react-author-quiz/" target="_blank">React based author quiz</a>
-                       </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/react-moving/" target="_blank">React based moving eyes</a>
-                       </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/scrolling-rocket/" target="_blank">Animate rocket on scroll</a>
-                       </li>
-                      <li>
-                        <a href="http://amit-nautiyal.github.io/react-routing" target="_blank">React Basic Routing</a>
-                      </li>
-                      <!--
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/products-page/" target="_blank">React Products Responsive Page</a>
-                      </li>
-                      -->
-                   </ul>
-                 </div>
-               </div>
-            </div>
-            <div class="col-md-12">
-               <div class="panel panel-default">
-                 <div class="panel-heading">
-                   <h3 class="panel-title">CSS Playground</h3>
-                 </div>
-                 <div class="panel-body">
-                   <h3>Links</h3>
-                   <ul>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/pure-css-boy/" target="_blank">Pure CSS Only Boy</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/grid-layout" target="_blank">12 Column responsive grid using CSS grid</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/moving-eyes" target="_blank">CSS & JS Moving Eyes</a>
-                      </li>
-                      <li>
-                         <a href="https://amit-nautiyal.github.io/css/imageHover3D" target="_blank">3D Image Hover Effect</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/transform-origin" target="_blank">Transform Origin</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/smiley" target="_blank">Simple Smiley with -webkit-box-reflect property</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/button-transition" target="_blank">Button Border Transition</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/black-friday" target="_blank">Use of -webkit-text-stroke and mix-blend-mode</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/css/button-size-rem" target="_blank">Button Sizes Based on rem</a>
-                      </li>
-                      <li>
-                        <a href="http://amit-nautiyal.github.io/sliding-door/" target="_blank">CSS Sliding Door Reveal</a>
-                      </li>
-                      <li>
-                        <a href="https://amit-nautiyal.github.io/portfolio/animate" target="_blank">Simple CSS Animations</a>
-                      </li>
-                   </ul>
-                 </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="jumbotron footer">
-         <div class="container">
-            <h4>Credits</h4>
-            <p class="credit">
-               I have learned some of these tricks and coding from LevelUpTuts, Pluralsight, Codeschool and varrious youtube videos.
-            </p>
-         </div>
-      </div>
-   </body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Amit Nautiyal - My github projects</title>
+    <link
+      rel="stylesheet"
+      href="styles.css"
+      media="screen"
+      title="no title"
+      charset="utf-8"
+    />
+  </head>
+  <body>
+    <script src="html5-qrcode.min.js"></script>
+    <div style="width: 500px" id="reader"></div>
+    <script>
+      function onScanSuccess(decodedText, decodedResult) {
+        // Handle on success condition with the decoded text or result.
+        console.log(`Scan result: ${decodedText}`, decodedResult);
+        html5QrcodeScanner.clear();
+      }
+
+      var html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250,
+      });
+      html5QrcodeScanner.render(onScanSuccess);
+    </script>
+  </body>
 </html>
