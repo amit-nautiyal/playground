@@ -14,9 +14,7 @@
          <div id="reader" width="600px"></div>
         <div id="show" style="display: none;">
             <h4>Scanned Result</h4>
-            decodedText: <p style="color: blue;" id="decodedText"></p>
-            decodedResult: <p style="color: blue;" id="decodedResult"></p>
-            error: <p style="color: blue;" id="error"></p>
+            decodedText: <p style="color: blue;" id="result"></p>
         </div>
     </div>
     <script>
@@ -35,8 +33,7 @@
   // handle the scanned code as you like, for example:
         if(decodedText){
                 document.getElementById('show').style.display = 'block';
-                document.getElementById('decodedText').textContent = decodedText;
-            document.getElementById('decodedResult').textContent = decodedResult;
+                document.getElementById('result').textContent = decodedText;
                 html5QrcodeScanner.stop();
             }
   console.log(`Code matched = ${decodedText}`, decodedResult);
@@ -45,11 +42,7 @@
 function onScanFailure(error) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-
-                document.getElementById('show').style.display = 'block';
-                document.getElementById('error').textContent = `Code scan error = ${error}`;
                 html5QrcodeScanner.stop();
-  
   console.warn(`Code scan error = ${error}`);
 }
 
