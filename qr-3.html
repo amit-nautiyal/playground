@@ -34,7 +34,7 @@
         if(decodedText){
                 document.getElementById('show').style.display = 'block';
                 document.getElementById('result').textContent = decodedText;
-                html5QrcodeScanner.stop();
+                html5QrcodeScanner.clear();
             }
   console.log(`Code matched = ${decodedText}`, decodedResult);
 }
@@ -42,7 +42,7 @@
 function onScanFailure(error) {
   // handle scan failure, usually better to ignore and keep scanning.
   // for example:
-                html5QrcodeScanner.stop();
+                html5QrcodeScanner.clear();
   console.warn(`Code scan error = ${error}`);
 }
 
