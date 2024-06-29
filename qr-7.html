@@ -33,7 +33,7 @@
             >Part Number</label
           >
             <div class="input-group mb-3">
-                <input id=""partNumber type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                <input id="partNumber" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('partNumber')">Button</button>
                 </div>
@@ -78,7 +78,7 @@
                 if(decodedText){
                     document.getElementById('show').style.display = 'block';
                     document.getElementById('result').textContent = decodedText;
-                    document.getElementById(action).val = decodedText;
+                    document.getElementById(action).value(decodedText);
                     
                     html5Qrcode.stop();
                 }
