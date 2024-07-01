@@ -55,15 +55,11 @@
     </div>
     <div id="scannerSection">
       <div id="reader" width="300px"></div>
-      <div id="show" style="display: none;">
-          <h4>Scanned Result</h4>
-          decodedText: <p style="color: blue;" id="result"></p>
-      </div>
-      <table class="table table-striped" id="myTable" style="display: none;">
+      <table class="table table-striped table-responsive" id="myTable" style="display: none;">
         <tbody>
           <tr>
-            <th>Format</th>
             <th>Text</th>
+            <th>Format</th>
           </tr>
         </tbody>
       </table>
@@ -73,43 +69,52 @@
         function scanCode(action) {
             startQallQRReader(action);
         } 
-
         function startQallQRReader(action) {
             const html5Qrcode = new Html5Qrcode('reader');
 			
             const qrCodeSuccessCallback = (decodedText, decodedResult)=>{
                 if(decodedText){
                     console.log(`Message: ${decodedText}, Result: ${JSON.stringify(decodedResult)}`);
-                    
-                    document.getElementById('show').style.display = 'block';
+
                     document.getElementById('myTable').style.display = 'block';
                     let data = Object.values(decodedResult);
-                    console.log('check--text--', data);
-                    createTableRow(data);
-					          document.getElementById("result").textContent = decodedText;
-					          document.getElementById(action).value = decodedText;
+                    console.log('data--', data);
+                    let inputText = "";
+                    let codeFormat = data[1].format.formatName;
+                    
+                    // check for "bin" in decodedText
+                    const urlParams = new URLSearchParams(data[1].text);
+                    const myParam = urlParams.get('bin');
+                    if(myParam) {
+                      console.log('bin----', myParam);
+                      let replacedString = myParam.replace(/-/g, "");
+                      console.log('replacedString----', replacedString.toUpperCase());
+                      inputText = replacedString.toUpperCase();
+                    } else {
+                      inputText = data[1].text
+                    }
+                    
+                    // Optional, push values to table and create a new row
+                    createTableRow(inputText, codeFormat);
+					          document.getElementById(action).value = inputText;
                     html5Qrcode.stop();
-					          document.getElementById('show').style.display = 'none';
                 }
             }
             const config = {fps:10, qrbox:{width:250, height:250}}
             html5Qrcode.start({facingMode:"environment"}, config,qrCodeSuccessCallback );
         }
 
-        function createTableRow(data) {
+        function createTableRow(text, fomat) {
           // Find a <table> element with id="myTable":
           var table = document.getElementById("myTable");
-
-          // Create an empty <tr> element and add it to the 1st position of the table:
+          // Create an empty <tr> element and add it to the last position of the table:
           var row = table.insertRow(-1);
-
           // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
           var cell1 = row.insertCell(0);
           var cell2 = row.insertCell(1);
-
           // Add some text to the new cells:
-          cell2.innerHTML = data[1].format.formatName;
-          cell1.innerHTML = data[1].text;
+          cell1.innerHTML = text;
+          cell2.innerHTML = fomat;
         }
             
     </script>
