@@ -38,6 +38,7 @@
                   <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('partNumber')">Button</button>
                 </div>
               </div>
+              <input id="partUUID" type="hidden" placeholder="Part UUID" />
         </div>
       </div>
       <div class="row mb-2">
@@ -46,22 +47,16 @@
             >Bin</label
           >
           <div class="input-group mb-3">
-            <input id="BinNumber" type="text" class="form-control" placeholder="Bin Number" />
+            <input id="binNumber" type="text" class="form-control" placeholder="Bin Number" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('BinNumber')">Button</button>
+              <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('binNumber')">Button</button>
             </div>
           </div>
       </div>
     </div>
     <div id="scannerSection">
       <div id="reader" width="300px"></div>
-      <table class="table table-striped table-responsive" id="myTable" style="display: none;">
-        <tbody>
-          <tr>
-            <th>Text</th>
-            <th>Format</th>
-          </tr>
-        </tbody>
+      <div id="result"></div>
       </table>
    </div>
    
@@ -72,11 +67,8 @@
         function startQallQRReader(action) {
             const html5Qrcode = new Html5Qrcode('reader');
 			
-            const qrCodeSuccessCallback = (decodedText, decodedResult)=>{
+            async function qrCodeSuccessCallback(decodedText, decodedResult) {
                 if(decodedText){
-                    console.log(`Message: ${decodedText}, Result: ${JSON.stringify(decodedResult)}`);
-
-                    document.getElementById('myTable').style.display = 'block';
                     let data = Object.values(decodedResult);
                     console.log('data--', data);
                     let inputText = "";
@@ -90,13 +82,15 @@
                       let replacedString = myParam.replace(/-/g, "");
                       console.log('replacedString----', replacedString.toUpperCase());
                       inputText = replacedString.toUpperCase();
+                      document.getElementById('binNumber').value = inputText;
                     } else {
-                      inputText = data[1].text
+                      inputText = data[1].text;
+                      let apiData = await getData(inputText, codeFormat);
+                      let inputValue = apiData.manufacturer_name + " " + apiData.number + " " + apiData.name + " ";
+                      document.getElementById('partNumber').value = inputValue;
+                      document.getElementById('partUUID').value = apiData.part_uuid;
                     }
-                    
-                    // Optional, push values to table and create a new row
-                    createTableRow(inputText, codeFormat);
-					          document.getElementById(action).value = inputText;
+                    console.log('html5Qrcode--------', html5Qrcode);
                     html5Qrcode.stop();
                 }
             }
@@ -104,19 +98,25 @@
             html5Qrcode.start({facingMode:"environment"}, config,qrCodeSuccessCallback );
         }
 
-        function createTableRow(text, fomat) {
-          // Find a <table> element with id="myTable":
-          var table = document.getElementById("myTable");
-          // Create an empty <tr> element and add it to the last position of the table:
-          var row = table.insertRow(-1);
-          // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          // Add some text to the new cells:
-          cell1.innerHTML = text;
-          cell2.innerHTML = fomat;
-        }
+        async function getData(text, fomat) {
+          const url = `https://manage.partxa.com/latest/system/barcode/get/?data=${text}&format_name=${fomat}`;
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log("data----------", json);
+            if(json.result) {
+                let data = json.data;
+                return data;
+            }
             
+          } catch (error) {
+            console.error(error.message);
+          }
+        } 
     </script>
     <script
       src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -133,5 +133,6 @@
       integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </body>
 </html>
