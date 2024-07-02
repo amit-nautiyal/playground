@@ -35,7 +35,7 @@
             <div class="input-group mb-3">
                 <input id="partNumber" type="text" class="form-control" placeholder="Part Number" />
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('partNumber')">Button</button>
+                  <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanPartNumber()">Button</button>
                 </div>
               </div>
               <input id="partUUID" type="hidden" placeholder="Part UUID" />
@@ -49,7 +49,7 @@
           <div class="input-group mb-3">
             <input id="binNumber" type="text" class="form-control" placeholder="Bin Number" />
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanCode('binNumber')">Button</button>
+              <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="scanBin()">Button</button>
             </div>
           </div>
       </div>
@@ -61,62 +61,77 @@
    </div>
    
     <script>
-        function scanCode(action) {
-            startQallQRReader(action);
-        } 
-        function startQallQRReader(action) {
-            const html5Qrcode = new Html5Qrcode('reader');
-			
-            async function qrCodeSuccessCallback(decodedText, decodedResult) {
-                if(decodedText){
-                    let data = Object.values(decodedResult);
-                    console.log('data--', data);
-                    let inputText = "";
-                    let codeFormat = data[1].format.formatName;
-                    
-                    // check for "bin" in decodedText
-                    const urlParams = new URLSearchParams(data[1].text);
-                    const myParam = urlParams.get('bin');
-                    if(myParam) {
-                      console.log('bin----', myParam);
-                      let replacedString = myParam.replace(/-/g, "");
-                      console.log('replacedString----', replacedString.toUpperCase());
-                      inputText = replacedString.toUpperCase();
-                      document.getElementById('binNumber').value = inputText;
-                    } else {
-                      inputText = data[1].text;
-                      let apiData = await getData(inputText, codeFormat);
-                      let inputValue = apiData.manufacturer_name + " " + apiData.number + " " + apiData.name + " ";
-                      document.getElementById('partNumber').value = inputValue;
-                      document.getElementById('partUUID').value = apiData.part_uuid;
-                    }
-                    console.log('html5Qrcode--------', html5Qrcode);
-                    html5Qrcode.stop();
-                }
-            }
-            const config = {fps:10, qrbox:{width:250, height:250}}
-            html5Qrcode.start({facingMode:"environment"}, config,qrCodeSuccessCallback );
-        }
-
-        async function getData(text, fomat) {
-          const url = `https://manage.partxa.com/latest/system/barcode/get/?data=${text}&format_name=${fomat}`;
-          try {
-            const response = await fetch(url);
-            if (!response.ok) {
-              throw new Error(`Response status: ${response.status}`);
-            }
-
-            const json = await response.json();
-            console.log("data----------", json);
-            if(json.result) {
-                let data = json.data;
-                return data;
-            }
-            
-          } catch (error) {
-            console.error(error.message);
+      function scanBin() {
+        const html5Qrcode = new Html5Qrcode('reader');
+        async function qrCodeSuccessCallback(decodedText, decodedResult) {
+          if(decodedText){
+              let data = Object.values(decodedResult);
+              console.log('data--', data);
+              let inputText = "";
+              let codeFormat = data[1].format.formatName;
+              
+              // check for "bin" in decodedText
+              const urlParams = new URLSearchParams(data[1].text);
+              const myParam = urlParams.get('bin');
+              if(myParam) {
+                console.log('bin----', myParam);
+                let replacedString = myParam.replace(/-/g, "");
+                console.log('replacedString----', replacedString.toUpperCase());
+                inputText = replacedString.toUpperCase();
+                document.getElementById('binNumber').value = inputText;
+              } else {
+                alert("Invalid Code");
+              }
+              html5Qrcode.stop();
           }
-        } 
+        }
+        const config = {fps:10, qrbox:{width:250, height:250}}
+        html5Qrcode.start({facingMode:"environment"}, config,qrCodeSuccessCallback );
+      }
+
+      function scanPartNumber() {
+        const html5Qrcode = new Html5Qrcode('reader');
+        async function qrCodeSuccessCallback(decodedText, decodedResult) {
+          if(decodedText){
+              let data = Object.values(decodedResult);
+              console.log('data--', data);
+              let codeFormat = data[1].format.formatName;
+              let inputText = data[1].text;
+              let apiData = await getData(inputText, codeFormat);
+              if(apiData) {
+                let inputValue = apiData.manufacturer_name + " " + apiData.number + " " + apiData.name + " ";
+                document.getElementById('partNumber').value = inputValue;
+                document.getElementById('partUUID').value = apiData.part_uuid;
+              } else {
+                alert("Invalid Code");
+              }
+              
+              html5Qrcode.stop();
+          }
+        }
+        const config = {fps:10, qrbox:{width:250, height:250}}
+        html5Qrcode.start({facingMode:"environment"}, config,qrCodeSuccessCallback );
+      }
+
+      async function getData(text, fomat) {
+        const url = `https://manage.partxa.com/latest/system/barcode/get/?data=${text}&format_name=${fomat}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          const json = await response.json();
+          console.log("data----------", json);
+          if(json.result) {
+              let data = json.data;
+              return data;
+          }
+          
+        } catch (error) {
+          console.error(error.message);
+        }
+      } 
     </script>
     <script
       src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
